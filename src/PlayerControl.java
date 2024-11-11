@@ -10,6 +10,18 @@ public class PlayerControl {
         this.player = player;
     }
 
+    // Modifikasi metode executeMoves untuk mengambil gerakan dari PlayerModel
+    public void executeMoves() {
+        for (String move : player.getPlayerMovementList()) {
+            // Jalankan satu per satu perintah gerakan
+            if (!isPlayerAlive()) {
+                System.out.println("Player has lost or is exhausted. No further moves possible.");
+                break; // Keluar dari loop jika player sudah mati atau kehabisan energi
+            }
+            movePlayer(move);
+        }
+    }
+
     // Metode untuk mengupdate posisi pemain dengan pengecekan board
     private void updatePlayerPosition(int newRow, int newCol) {
         // Pastikan posisi berada dalam batas board
@@ -62,6 +74,9 @@ public class PlayerControl {
             }
         }
 
+        // Decrease player's energy for the move
+        player.updatePlayerEnergy(-1);
+
         // Update posisi pemain menggunakan metode updatePlayerPosition
         updatePlayerPosition(newRow, newCol);
 
@@ -72,11 +87,19 @@ public class PlayerControl {
 
         // Interaksi dengan tile tempat pemain berada
         TileModel currentTile = board.getTile(newRow, newCol);
+        System.out.println("Player is on " + currentTile.getTileType() + " tile at " + newRow + ", " + newCol);
         TileInteractionResult result = currentTile.interact(player);
 
         player.updatePlayerStatus(result.getStatus());
         player.updatePlayerEnergy(result.getEnergyChange());
         player.updatePlayerScore(result.getScoreChange());
+
+        // Check if player has lost
+        if (player.getPlayerStatus() == PlayerStatus.LOSE) {
+            player.updatePlayerIsAlive(false);
+            System.out.println("Player has lost the game!");
+            return;
+        }
 
         // Cek apakah energi pemain habis
         if (player.getPlayerEnergy() <= 0) {
@@ -84,21 +107,6 @@ public class PlayerControl {
             player.updatePlayerIsAlive(false);
             System.out.println("Player is exhausted!");
         }
-    }
-
-    // Metode untuk menambah skor pemain
-    public void addPlayerScore(int score) {
-        player.updatePlayerScore(score);
-    }
-
-    // Metode untuk mengurangi energi pemain
-    public void decreasePlayerEnergy(int energy) {
-        player.updatePlayerEnergy(-energy);
-    }
-
-    // Metode untuk menambah energi pemain
-    public void increasePlayerEnergy(int energy) {
-        player.updatePlayerEnergy(energy);
     }
 
     // Metode untuk mencetak board

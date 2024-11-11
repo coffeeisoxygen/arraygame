@@ -1,9 +1,9 @@
 import com.coffeeisoxygen.arraygame.model.player.PlayerStatus;
 
 public class TileInteractionResult {
-    private final PlayerStatus status;
-    private final int energyChange;
-    private final int scoreChange;
+    private PlayerStatus status;
+    private int energyChange;
+    private int scoreChange;
 
     public TileInteractionResult(PlayerStatus status, int energyChange, int scoreChange) {
         this.status = status;

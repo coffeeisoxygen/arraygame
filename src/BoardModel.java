@@ -10,7 +10,6 @@ public class BoardModel {
         this.boardCols = boardCols;
         this.boardSize = boardRows * boardCols;
         createBoard();
-
     }
 
     private void createBoard() {
@@ -25,6 +24,12 @@ public class BoardModel {
                     boardTiles[i][j] = new RouteTile(i, j);
                 }
             }
+        }
+    }
+
+    public void setTile(int row, int col, TileModel tile) {
+        if (row >= 0 && row < boardTiles.length && col >= 0 && col < boardTiles[0].length) {
+            boardTiles[row][col] = tile;
         }
     }
 
@@ -52,5 +57,4 @@ public class BoardModel {
             System.out.println();
         }
     }
-
 }

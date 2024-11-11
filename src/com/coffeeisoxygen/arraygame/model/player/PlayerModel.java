@@ -1,3 +1,4 @@
+// Kelas PlayerModel
 package com.coffeeisoxygen.arraygame.model.player;
 
 import java.util.List;
@@ -13,25 +14,26 @@ public class PlayerModel {
     private boolean playerIsAlive;
     private List<String> playerMovementList;
     private PlayerStatus playerStatus;
+    private int movementIndex; // Tambahan index untuk track gerakan berikutnya
 
     // Constructor
     public PlayerModel(String playerName, int playerEnergy, String playerMovements, int initialRow, int initialCol) {
         this.playerName = playerName;
         this.playerEnergy = playerEnergy;
-        List<String> playerMovementCharsList = playerMovements.chars()
+        this.playerMovementList = playerMovements.chars()
                                                  .mapToObj(c -> String.valueOf((char) c))
                                                  .collect(Collectors.toList());
-        this.playerMovementList = playerMovementCharsList;
-        this.initializePlayer(initialRow, initialCol);
         this.playerStatus = PlayerStatus.ALIVE;
+        this.playerIsAlive = true;
+        this.movementIndex = 0;
+        this.initializePlayer(initialRow, initialCol);
     }
 
-    // contrsuctor dengan nilai nilai default
+    // Method untuk menginisialisasi player di posisi awal
     private void initializePlayer(int initialRow, int initialCol) {
         this.playerScore = 0;
-        this.playerPosRow = initialRow; // Start at the specified initial row
-        this.playerPosCol = initialCol; // Start at the specified initial column
-        this.playerIsAlive = true;
+        this.playerPosRow = initialRow;
+        this.playerPosCol = initialCol;
     }
 
     // Getter
@@ -59,12 +61,24 @@ public class PlayerModel {
         return playerIsAlive;
     }
 
+    public PlayerStatus getPlayerStatus() {
+        return playerStatus;
+    }
+
     public List<String> getPlayerMovementList() {
+
+        // Return the list of player movements
+
         return playerMovementList;
     }
 
-    public PlayerStatus getPlayerStatus() {
-        return playerStatus;
+    // Method untuk mendapatkan gerakan berikutnya dari player
+    public String nextMove() {
+        if (movementIndex < playerMovementList.size()) {
+            return playerMovementList.get(movementIndex++);
+        } else {
+            return null; // Jika sudah tidak ada gerakan
+        }
     }
 
     // Private Setters - Diakses hanya oleh PlayerControl

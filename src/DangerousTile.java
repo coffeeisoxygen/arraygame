@@ -8,8 +8,7 @@ public class DangerousTile extends TileModel {
 
     @Override
     public TileInteractionResult interact(PlayerModel player) {
-        System.out.println("Player " + player.getPlayerName() + " is on dangerous tile at " + this.Tilerow + ", " + this.Tilecol);
-        // Dangerous tile interaction: player goes missing, no energy or score change
-        return new TileInteractionResult(PlayerStatus.MISSING, 0, 0);
+        // Define interaction logic for dangerous tile
+        return new TileInteractionResult(PlayerStatus.LOSE, 0, 0);
     }
 }
