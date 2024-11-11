@@ -1,6 +1,7 @@
 package com.coffeeisoxygen.arraygame.model.player;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class PlayerModel {
 
@@ -14,19 +15,22 @@ public class PlayerModel {
     private PlayerStatus playerStatus;
 
     // Constructor
-    public PlayerModel(String playerName, int playerEnergy, List<String> playerMovementList) {
+    public PlayerModel(String playerName, int playerEnergy, String playerMovements, int initialRow, int initialCol) {
         this.playerName = playerName;
         this.playerEnergy = playerEnergy;
-        this.playerMovementList = playerMovementList;
-        this.initializePlayer();
+        List<String> playerMovementCharsList = playerMovements.chars()
+                                                 .mapToObj(c -> String.valueOf((char) c))
+                                                 .collect(Collectors.toList());
+        this.playerMovementList = playerMovementCharsList;
+        this.initializePlayer(initialRow, initialCol);
         this.playerStatus = PlayerStatus.ALIVE;
     }
 
     // contrsuctor dengan nilai nilai default
-    private void initializePlayer() {
+    private void initializePlayer(int initialRow, int initialCol) {
         this.playerScore = 0;
-        this.playerPosRow = 0;
-        this.playerPosCol = 0;
+        this.playerPosRow = initialRow; // Start at the specified initial row
+        this.playerPosCol = initialCol; // Start at the specified initial column
         this.playerIsAlive = true;
     }
 
@@ -63,67 +67,50 @@ public class PlayerModel {
         return playerStatus;
     }
 
-    // Setter
-    public void setPlayerName(String playerName) {
-        this.playerName = playerName;
-    }
-
-    public void setPlayerPosRow(int playerPosRow) {
+    // Private Setters - Diakses hanya oleh PlayerControl
+    private void setPlayerPosRow(int playerPosRow) {
         this.playerPosRow = playerPosRow;
     }
 
-    public void setPlayerPosCol(int playerPosCol) {
+    private void setPlayerPosCol(int playerPosCol) {
         this.playerPosCol = playerPosCol;
     }
 
-    public void setPlayerMovementList(List<String> playerMovementList) {
-        this.playerMovementList = playerMovementList;
-    }
-
-    public void setPlayerStatus(PlayerStatus playerStatus) {
+    private void setPlayerStatus(PlayerStatus playerStatus) {
         this.playerStatus = playerStatus;
     }
 
-    // Method
-    public void addPlayerScore(int score) {
+    private void setPlayerIsAlive(boolean playerIsAlive) {
+        this.playerIsAlive = playerIsAlive;
+    }
+
+    private void setPlayerScore(int playerScore) {
+        this.playerScore = playerScore;
+    }
+
+    private void setPlayerEnergy(int playerEnergy) {
+        this.playerEnergy = playerEnergy;
+    }
+
+    // Methods to be used by PlayerControl
+    public void updatePlayerScore(int score) {
         this.playerScore += score;
     }
 
-    public void decreasePlayerEnergy(int energy) {
-        this.playerEnergy -= energy;
-    }
-
-    public void increasePlayerEnergy(int energy) {
+    public void updatePlayerEnergy(int energy) {
         this.playerEnergy += energy;
     }
 
-    public void movePlayer(String direction) {
-        switch (direction.toUpperCase()) {
-            case "U" -> this.playerPosRow -= 1;
-            case "D" -> this.playerPosRow += 1;
-            case "L" -> this.playerPosCol -= 1;
-            case "R" -> this.playerPosCol += 1;
-            case "S" -> this.playerEnergy += 10;
-            default -> {
-                // invalid input
-            }
-        }
-        if (this.playerEnergy <= 0) {
-            this.playerStatus = PlayerStatus.EXHAUSTED;
-        }
-        // Add other conditions to update playerStatus as needed
+    public void updatePlayerStatus(PlayerStatus status) {
+        this.playerStatus = status;
     }
-    // TODO: ComeBack Here after setup a board , tile and sub class
-    // List Of TODO :
-    // ? [ ] mark : Memaksimalkan Separation of Concerns
-    // ? [ ] mark : Mengintegrasikan Board atau Tile Interactions
-    // ? [ ] mark : Memaksimlkan Single Responsibility Principle
-    // ! [ ] fix : Meningkatkan Pengelolaan Energi, Status, dan Penyederhanaan
-    // Setter
-    /*
-     * Membuat Interface untuk PlayerMovementHandler atau GameEventHandler jika
-     * nantinya ingin membuat variasi handler untuk event yang lebih kompleks.
-     * Menyiapkan Unit Test untuk PlayerController sehingga memastikan logika
-     * pergerakan dan interaksi berjalan sesuai skenario game.
-     */
+
+    public void updatePlayerIsAlive(boolean isAlive) {
+        this.playerIsAlive = isAlive;
+    }
+
+    public void updatePlayerPosition(int row, int col) {
+        setPlayerPosRow(row);
+        setPlayerPosCol(col);
+    }
 }
